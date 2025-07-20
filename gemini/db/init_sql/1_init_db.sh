@@ -29,18 +29,18 @@ if [ -z "${POSTGRESQL_DATABASE}" ]; then
     exit 1
 fi
 
-# Set password for authentication
-export POSTGRES_CONNECTION_STRING="postgresql://postgres:${POSTGRESQL_PASSWORD}@localhost:5432/${POSTGRESQL_DATABASE}"
+# Use PGPASSWORD to avoid exposing the password in the process list
+export PGPASSWORD="${POSTGRESQL_PASSWORD}"
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
-until psql "${POSTGRES_CONNECTION_STRING}" -c '\q' &>/dev/null; do
+until psql -h localhost -U "postgres" -d "${POSTGRESQL_DATABASE}" -c '\q' &>/dev/null; do
     echo "PostgreSQL not ready yet, retrying in 5 seconds..."
     sleep 5
 done
 
 # Execute SQL with password authentication
-psql "${POSTGRES_CONNECTION_STRING}" <<EOSQL
+psql -h localhost -U "postgres" -d "${POSTGRESQL_DATABASE}" <<EOSQL
     -- Create a schema for the GEMINI Database
     CREATE SCHEMA IF NOT EXISTS gemini;
     
@@ -65,10 +65,10 @@ EOSQL
 
 echo "Database initialization completed successfully"
 
-export POSTGRES_CONNECTION_STRING="postgresql://${POSTGRESQL_USERNAME}:${POSTGRESQL_PASSWORD}@localhost:5432/${POSTGRESQL_DATABASE}"
+export PGPASSWORD="${POSTGRESQL_PASSWORD}"
 
 # Run all the sql scripts that are in the /docker-entrypoint-initdb.d directory
 for f in /docker-entrypoint-initdb.d/scripts/*.sql; do
     echo "Running $f"
-    psql "${POSTGRES_CONNECTION_STRING}" -f "$f"
+    psql -h localhost -U "${POSTGRESQL_USERNAME}" -d "${POSTGRESQL_DATABASE}" -f "$f"
 done
