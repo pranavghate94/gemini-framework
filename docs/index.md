@@ -25,3 +25,8 @@ Many staple crops that are important for food, nutritional, and economic securit
 - [CLI](cli.md)
 - [Database](database/schema.md)
 - [REST API](rest_api/overview.md)
+
+## Getting Started
+
+For installation instructions and to get started with the framework, please see the Getting Started guide in the [documentation](https://gemini-breeding.github.io/gemini-framework/getting_started/).
+

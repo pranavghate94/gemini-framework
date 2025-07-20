@@ -26,7 +26,7 @@ $ poetry install
 Setup the GEMINI Pipeline
 
 ```
-$ gemini setup --default
+$ gemini-framework setup --default
 ```
 
 #### Step 4
@@ -34,7 +34,7 @@ $ gemini setup --default
 Build the Docker containers that make up the GEMINI Pipeline
 
 ```
-$ gemini build
+$ gemini-framework build
 ```
 
 #### Step 5
@@ -42,7 +42,7 @@ $ gemini build
 Start the GEMINI Pipeline
 
 ```
-$ gemini start
+$ gemini-framework start
 ```
 
 ## Next Steps

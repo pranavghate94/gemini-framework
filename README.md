@@ -15,57 +15,10 @@ Many staple crops that are important for food, nutritional, and economic securit
 - Minimum 16 GB of RAM
 - Minimum 256 GB Storage
 - Python >= 3.11
-- [Poetry] (https://python-poetry.org/docs/)
+- [Poetry](https://python-poetry.org/docs/)
 
-# Getting Started & Installation
+## Getting Started
 
-## Installation Steps
-
-Install all the prerequisites above before continuing
-
-#### Step 1
-
-Clone the repository and enter the root folder
-
-```
-$ git clone https://github.com/GEMINI-Breeding/gemini-framework.git
-$ cd gemini-framework
-```
-
-#### Step 2
-
-Run poetry installation command to install global `gemini` python module.
-
-```
-$ poetry install
-```
-
-#### Step 3
-
-Setup the GEMINI Pipeline
-
-```
-$ gemini setup --default
-```
-
-#### Step 4
-
-Build the Docker containers that make up the GEMINI Pipeline
-
-```
-$ gemini build
-```
-
-#### Step 5
-
-Start the GEMINI Pipeline
-
-```
-$ gemini start
-```
-
-## Next Steps
-
-The REST API will be available on http://localhost:7777
+For installation instructions and to get started with the framework, please see the Getting Started guide in the [documentation](https://gemini-breeding.github.io/gemini-framework/getting_started/).
 
 
