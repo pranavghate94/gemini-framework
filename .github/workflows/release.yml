@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+  # Trigger on published releases
+  release:
+    types: [published]
+  # Trigger on version tags
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine poetry-core
+
+    - name: Build source and wheel distributions
+      run: |
+        python -m build
+
+    - name: Check build artifacts
+      run: |
+        ls -la dist/
+        python -m twine check dist/*
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+        retention-days: 90
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    # Only run on release published or tag push (not on PRs or manual workflow_dispatch without tags)
+    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+
+    - name: List downloaded artifacts
+      run: ls -la dist/
+
+    - name: Publish to PyPI
+      env:
+        # Repository secret PYPI_API_TOKEN must be set in repository settings
+        # Go to: Settings > Secrets and variables > Actions > Repository secrets
+        # Add secret named: PYPI_API_TOKEN
+        # Value should be your PyPI API token starting with 'pypi-'
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+      run: |
+        python -m pip install --upgrade pip twine poetry-core
+        python -m twine upload dist/*
